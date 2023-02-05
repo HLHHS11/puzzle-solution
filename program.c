@@ -2,10 +2,14 @@
 #include<stdlib.h>
 #include<stdbool.h>
 
-#define NX 10
-#define NY 12
+#define NX 5
+#define NY 7
 
-// 完成
+/** -------------------------
+ * @param grid - 二次元配列のポインタ
+ * パズルのグリッドを横NX、縦NYのサイズで初期化します。
+ * グリッドは、引数の参照で与えられる二次元配列です。
+ *  -------------------------*/
 void initGrid (char*** grid)
 {
     unsigned i, j;
@@ -13,13 +17,17 @@ void initGrid (char*** grid)
     for (i=0; i<NY; i++) {
         (*grid)[i] = (char*)calloc(NX, sizeof(char));
         for (j=0; j<NX; j++) {
-            (*grid)[i][j] = 'O';
+            (*grid)[i][j] = 'X';
         }
     }
 }
 
 
-// 完成
+/** -------------------------
+ * @param grid - 二次元配列のポインタ 
+ * パズルのグリッドのメモリ領域を開放します。
+ * プログラムの終了時に実行します。
+ *  -------------------------*/ 
 void freeGrid (char*** grid)
 {
     unsigned i;
@@ -30,7 +38,10 @@ void freeGrid (char*** grid)
 }
 
 
-// 完成
+/** -------------------------
+ * @param grid - 二次元配列のポインタ
+ * グリッドの図をコマンドライン上に表示します。
+ *  -------------------------*/
 void printGrid (char*** grid) {
     unsigned i, j;
     printf(" |");
@@ -52,18 +63,24 @@ void printGrid (char*** grid) {
 }
 
 
+/** -------------------------
+ * @param inputUint - サイズ２の配列のポインタ
+ * 「列番号+半角スペース+行番号」の形式の標準入力を求め、
+ * 適切な形式の入力が得られた時に、引数の配列に格納します。
+ * 関数updateGrid()内で呼び出されます。
+ *  -------------------------*/
 void getValidInput (unsigned* inputUint)
 {
     unsigned uint0, uint1;
     do {
         char input[100];
-        print("マスを指定してください（例:3列・5行→3 5）\n");
+        printf("マスを指定してください（例:3列・5行→3 5）\n");
         fgets(input, 100, stdin);
         if (sscanf(input, "%u %u", &uint0, &uint1)) {
             if (uint0<NX && uint1<NY) {
                 break;
             } else {
-                printf("列番号はNX-1以下、行番号はNY-1以下で指定してください\n");
+                printf("入力形式が間違っています。列番号はNX-1以下、行番号はNY-1以下で指定してください\n");
                 continue;
             }
         } else {
@@ -73,18 +90,19 @@ void getValidInput (unsigned* inputUint)
     } while (true);
     inputUint[0] = uint0;
     inputUint[1] = uint1;
-    // *(inputUint)[0] = uint0;と書いたら
-    // "オペランド '*' はポインターである必要がありますが、型 "unsigned int" が指定されています"
-    // といわれた。受け取ったポインタにはずっと*つけると思ってたから、
-    // 認識を変えなければ！！
 }
 
 
+/** -------------------------
+ * @param grid - 二次元配列のポインタ
+ * getValidInput()関数を用いて得られた情報に基づいて、
+ * グリッドを描き換えます。
+ *  -------------------------*/
 void updateGrid (char*** grid)
 {
     //getvalidinputを実行
     unsigned inputUint[2];
-    getValidInput(&inputUint);
+    getValidInput(inputUint);
     int itr[5][2] = {{0,0}, {0,1}, {0,-1}, {1,0}, {-1,0}};
     unsigned i;
     int tempX, tempY;
@@ -107,6 +125,10 @@ void updateGrid (char*** grid)
 }
 
 
+/** -------------------------
+ * @param grid - 二次元配列のポインタ
+ * 更新されたグリッドが、終了条件を満たしているか判定します。
+ *  -------------------------*/ 
 bool isSolved (char*** grid)
 {
     unsigned i,j;
@@ -121,12 +143,14 @@ bool isSolved (char*** grid)
 }
 
 
-
+/** -------------------------
+ * 
+ * 
+ *  -------------------------*/ 
 int main (void)
 {
 
     /* 配列の初期化 */
-    // エラー返ってきたらそこの処理もしないと 。
     char **grid;
     initGrid(&grid);
     printGrid(&grid);
